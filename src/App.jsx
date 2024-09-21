@@ -10,6 +10,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import worker from './workers/simulation.js';
+import WebWorker from './WebWorker';
 
 const router = createBrowserRouter([
   {
@@ -23,10 +25,28 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const webWorker = new WebWorker(worker);
+
+  const [simulationState, setSimulationState] = useState()
+
+  const turnOn = () => {
+    webWorker.postMessage({eventType:"on"});
+  }
+
+  const turnOff = () => {
+    webWorker.postMessage({eventType:"off"});
+  }
+
+  webWorker.addEventListener('message', (e) => {
+    setSimulationState(e.data)
+});
+
   return (
     <>
-    <SimulationMonitor />
-    <div class="box">
+    <button onClick={()=>turnOn()}>on</button>
+    <button onClick={()=>turnOff()}>off</button>
+    <SimulationMonitor data={simulationState}/>
+    <div className="box">
     <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>

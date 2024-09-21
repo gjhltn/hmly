@@ -1,3 +1,3 @@
 import styles from './SimulationMonitor.module.css'
 
-export const SimulationMonitor = () =><div className={styles.sm}>simulation</div>
+export const SimulationMonitor = ({data}) =><div className={styles.sm}>{data && JSON.stringify(data)}</div>
