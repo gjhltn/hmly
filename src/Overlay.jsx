@@ -12,6 +12,7 @@ export const Overlay = () => {
         }
     
     });
-return <div className={styles.overlay}>{date.toLocaleTimeString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+return <div className={styles.overlay}>{date.toLocaleTimeString('en-UK', { weekday:'long', hour: 'numeric', minute: 'numeric', hour12: true })}
+</div>
 
 }
