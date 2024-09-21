@@ -13,7 +13,7 @@ import {
 import worker from './workers/simulation.js';
 import WebWorker from './WebWorker';
 import { SimulationContext } from './SimulationContext.js';
-
+/*
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +21,18 @@ const router = createBrowserRouter([
   },
   {
     path: "/boost",
+    element: <Boost />,
+  },
+]); */
+
+
+const router = createBrowserRouter([
+  {
+    path: "/hmly/",
+    element: <Home />,
+  },
+  {
+    path: "/hmly/boost",
     element: <Boost />,
   },
 ]);
