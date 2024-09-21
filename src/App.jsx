@@ -63,10 +63,7 @@ function App() {
   return (
     <>
     <SimulationMonitor data={simulationState}/>
-   
-        <button onClick={()=>turnOn()}>on</button>
-        <button onClick={()=>turnOff()}>off</button>
-     
+
         <SimulationContext.Provider value={{
 temperature: 18.2,
 isOn:simulationState.heatingOn,
