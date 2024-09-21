@@ -40,7 +40,8 @@ const router = createBrowserRouter([
 function App() {
   const webWorker = new WebWorker(worker);
   const [simulationState, setSimulationState] = useState({
-    heatingOn: false
+    heatingOn: false,
+    temperature:0
   }
   )
 
@@ -65,7 +66,7 @@ function App() {
     <SimulationMonitor data={simulationState}/>
 
         <SimulationContext.Provider value={{
-temperature: 18.2,
+temperature: simulationState.temperature,
 isOn:simulationState.heatingOn,
 turnOn: turnOn,
 turnOff: turnOff
