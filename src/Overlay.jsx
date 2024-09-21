@@ -1,4 +1,4 @@
-import  React, { useState , useEffect } from 'react'
+import  { useState , useEffect } from 'react'
 import styles from './Overlay.module.css'
 
 export const Overlay = () => {
@@ -12,7 +12,9 @@ export const Overlay = () => {
         }
     
     });
-return <div className={styles.overlay}>{date.toLocaleTimeString('en-UK', { weekday:'long', hour: 'numeric', minute: 'numeric', hour12: true })}
+return <div className={styles.overlay}>
+    <div>{date.toLocaleTimeString('en-UK', { weekday:'long', hour: 'numeric', minute: 'numeric', hour12: true })}</div>
+    <div className={styles.arrows}>⇄</div>
 </div>
 
 }
