@@ -1,13 +1,13 @@
 export default () => {
 
   self.state={
-    temperature:19.5,
+    temperature:19.2,
     heatingOn: false
   }
 
   self.switchHeatingOn = () => self.state.heatingOn = true
   self.switchHeatingOff = () => self.state.heatingOn = false
-  
+
   self.onmessage = (e) => {
     
     console.log("Message received from main script",e.data.eventType);

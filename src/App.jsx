@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { Home } from './Home'
 import { Boost } from './Boost'
@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import worker from './workers/simulation.js';
 import WebWorker from './WebWorker';
+import { SimulationContext } from './SimulationContext.js';
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,14 @@ const router = createBrowserRouter([
 
 function App() {
   const webWorker = new WebWorker(worker);
+  const [simulationState, setSimulationState] = useState({
+    heatingOn: false
+  }
+  )
 
-  const [simulationState, setSimulationState] = useState()
+  useEffect(() => {
+    webWorker.postMessage({eventType:"init"});
+  }, []);
 
   const turnOn = () => {
     webWorker.postMessage({eventType:"on"});
@@ -43,15 +50,28 @@ function App() {
 
   return (
     <>
-    <button onClick={()=>turnOn()}>on</button>
-    <button onClick={()=>turnOff()}>off</button>
     <SimulationMonitor data={simulationState}/>
+   
+        <button onClick={()=>turnOn()}>on</button>
+        <button onClick={()=>turnOff()}>off</button>
+     
+        <SimulationContext.Provider value={{
+temperature: 18.2,
+isOn:simulationState.heatingOn,
+turnOn: turnOn,
+turnOff: turnOff
+
+
+        }}>
     <div className="box">
+      
     <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
         <Overlay />
+        
     </div>
+    </SimulationContext.Provider>
     </>
   )
 }
