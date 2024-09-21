@@ -1,0 +1,7 @@
+.overlay {
+    color: white;
+    font-size: 1rem;
+    position: absolute;
+    padding:10px 20px;
+    font-weight: 700;
+}
