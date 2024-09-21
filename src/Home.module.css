@@ -90,9 +90,10 @@
 
   .status {
     display:block;
-    font-size:2.8rem;
+    font-size:2.2rem;
     font-weight:bold;
     text-transform: lowercase;font-variant:small-caps;
+    margin-top:1rem;
   }
 
   .a,
@@ -101,4 +102,6 @@
     border-radius:1rem;
     padding:5px 10px 0;
     cursor: pointer;
+    text-decoration: none;
+    color: #000;
   }

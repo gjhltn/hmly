@@ -1,13 +1,14 @@
 import styles from './Home.module.css'
+import { Outlet, Link } from "react-router-dom";
 
 export const Home = () =><div className={styles.home}>
     
 
     <div className={styles.wrapper}>
-  <a className={styles.a}>
+    <Link className={styles.a} to={`boost`}>
   <span className={styles.title}>Heating</span>
   <span className={styles.status}>On</span>
-  </a>
+  </Link>
   <div className={styles.b}>
     <div className={styles.current}>
         <h1>Current Temperature</h1>
