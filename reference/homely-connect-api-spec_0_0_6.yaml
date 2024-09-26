@@ -1,0 +1,485 @@
+openapi: 3.0.1
+info:
+  title: Homely Connect API Specification
+  description: Exposes heat pump data collected by Homely
+  contact: {}
+  version: 0.0.6
+servers:
+  - url: https://connect.homelyenergy.com
+tags:
+  - name: data
+    description: data retrieval
+  - name: tariff
+    description: read and write energy tariffs
+paths:
+  /houses:
+    get:
+      tags:
+        - data
+      summary: List Houses
+      description: Get list of houses belonging to authorized user
+      operationId: getHouses
+      security:
+        - OAuth2: [list-houses]
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  houses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        houseId:
+                          type: string
+              example:
+                houses:
+                  - houseId: "abc123"
+                  - houseId: "def456"
+  /houses/{houseId}/status/basic:
+    get:
+      tags:
+        - data
+      summary: Get basic status
+      description: Basic customer status information for a given house
+      operationId: getBasicStatus
+      security:
+        - OAuth2: [basic-status]
+      parameters:
+        - name: houseId
+          in: path
+          description: The house ID to retrieve status information for
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  houseId:
+                    type: string
+                    nullable: false
+                  heatPump:
+                    type: object
+                    properties:
+                      make:
+                        type: string
+                        nullable: true
+                      model:
+                        type: string
+                        nullable: true
+                      estimatedElectricalPowerWatts:
+                        type: integer
+                        nullable: true
+                        minimum: 0
+                        maximum: 20000
+                      estimatedLifetimeEnergyWattHours:
+                        type: integer
+                        nullable: true
+                      hotWaterOn:
+                        type: boolean
+                        nullable: false
+                      hotWaterSetPoint:
+                        type: number
+                        nullable: true
+                        minimum: 5
+                        maximum: 80
+                      outdoorTemp:
+                        type: number
+                        nullable: true
+                        minimum: -30
+                        maximum: 50
+                      zones:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            zoneId:
+                              type: integer
+                              nullable: false
+                            zoneName:
+                              type: string
+                              nullable: true
+                            temperature:
+                              type: number
+                              nullable: true
+                              minimum: -10
+                              maximum: 50
+                            setPoint:
+                              type: number
+                              nullable: false
+                              minimum: 0
+                              maximum: 50
+                            heatingOn:
+                              type: boolean
+                              nullable: false
+                      isOnline:
+                        type: boolean
+                        nullable: false
+                      lastSeen:
+                        type: string
+                        nullable: false
+                        description:
+                          The date and time when the house last reported
+                          data online
+                        format: date-time
+              example:
+                houseId: abc123,
+                heatPump:
+                  make: midea
+                  model: mXYZ
+                  estimatedElectricalPowerWatts: 123
+                  estimatedLifetimeEnergyWattHours: 123455
+                  hotWaterOn: false
+                  hotWaterSetPoint: 55.0
+                  outdoorTemp: 9.5
+                  zones:
+                    - zoneId: 1
+                      zoneName: livingRoom
+                      temperature: 19.4
+                      setPoint: 19.0
+                      heatingOn: true
+                    - zoneId: 2
+                      zoneName: hall
+                      temperature: 19.7
+                      setPoint: 18.5
+                      heatingOn: false
+                  isOnline: true
+                  lastSeen: 2022-10-12T09:22:00Z
+  /houses/{houseId}/status/advanced:
+    get:
+      tags:
+        - data
+      summary: Get advanced status
+      description: Advanced status information for a given house
+      operationId: getAdvancedStatus
+      security:
+        - OAuth2: [advanced-status]
+      parameters:
+        - name: houseId
+          in: path
+          description: The house ID to retrieve status information for
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  houseId:
+                    type: string
+                    nullable: false
+                  heatPump:
+                    type: object
+                    properties:
+                      make:
+                        type: string
+                        nullable: true
+                      model:
+                        type: string
+                        nullable: true
+                      estimatedElectricalPowerWatts:
+                        type: integer
+                        nullable: true
+                        minimum: 0
+                        maximum: 20000
+                      estimatedLifetimeEnergyWattHours:
+                        type: integer
+                        nullable: true
+                      estimatedThermalPowerWatts:
+                        type: integer
+                        nullable: true
+                        minimum: 0
+                        maximum: 80000
+                      hotWaterOn:
+                        type: boolean
+                        nullable: false
+                      hotWaterTemp:
+                        type: number
+                        nullable: true
+                        minimum: -20
+                        maximum: 120
+                      hotWaterSetPoint:
+                        type: number
+                        nullable: true
+                        minimum: 5
+                        maximum: 80
+                      outdoorTemp:
+                        type: number
+                        nullable: true
+                        minimum: -30
+                        maximum: 50
+                      flowTemp:
+                        type: number
+                        nullable: true
+                        description:
+                          The temperature of the flow to the heating
+                          system from the heat pump in degrees Celsius
+                        minimum: 5
+                        maximum: 80
+                      zones:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            zoneId:
+                              type: integer
+                              nullable: false
+                            zoneName:
+                              type: string
+                              nullable: true
+                            temperature:
+                              type: number
+                              nullable: true
+                              minimum: -10
+                              maximum: 50
+                            setPoint:
+                              type: number
+                              nullable: false
+                              minimum: 0
+                              maximum: 50
+                            heatingOn:
+                              type: boolean
+                              nullable: false
+                            flowTempSetPoint:
+                              type: number
+                              nullable: true
+                              description:
+                                The flow temperature set point written
+                                by Homely to heat pump
+                      isOnline:
+                        type: boolean
+                        nullable: false
+                      lastSeen:
+                        type: string
+                        nullable: false
+                        description:
+                          The date and time when the house last reported
+                          data online
+                        format: date-time
+              example:
+                houseId: abc123
+                heatPump:
+                  make: samsung
+                  model: AE123
+                  estimatedElectricalPowerWatts: 123
+                  estimatedLifetimeEnergyWattHours: 123455
+                  estimatedThermalPowerWatts: 390
+                  hotWaterOn: false
+                  hotWaterTemp: 24.3
+                  hotWaterSetPoint: 55
+                  outdoorTemp: 9.5
+                  flowTemp: 35.7
+                  zones:
+                    - zoneId: 1
+                      zoneName: livingRoom
+                      temperature: 19.4
+                      setPoint: 19.0
+                      heatingOn: true
+                      flowTempSetPoint: 35
+                    - zoneId: 2
+                      zoneName: hall
+                      temperature: 19.7
+                      setPoint: 18.5
+                      heatingOn: false
+                      flowTempSetPoint: 30
+                  isOnline: true
+                  lastSeen: 2022-10-12T09:22:00Z
+  /houses/{houseId}/energy-consumption/half-hourly:
+    get:
+      tags:
+        - data
+      summary: Get half-hourly consumption
+      description:
+        The energy consumption history of connected assets for a given
+        UTC day, by half-hour blocks, returned in watt-hours
+      operationId: getHhConsumption
+      security:
+        - OAuth2: [energy-consumption-hh]
+      parameters:
+        - name: houseId
+          in: path
+          description: The house ID to retrieve consumption information for
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: UTC date to return energy consumption for, e.g., "2023-01-01"
+          required: true
+          schema:
+            type: string
+            format: date(format='%Y-%m-%d')
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json':
+              schema:
+                type: object
+                properties:
+                  houseId:
+                    type: string
+                  heatPumpConsumption:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startTime:
+                          type: string
+                          format: date-time
+                        endTime:
+                          type: string
+                          format: date-time
+                        energyWh:
+                          type: integer
+  /houses/{houseId}/tariffs/priority:
+    delete:
+      tags:
+        - tariff
+      summary: Clear priority tariff
+      description: Removes priority tariff and reverts house to user-declared tariff
+      operationId: clearPriorityTariff
+      security:
+        - OAuth2: [tariff-priority-full-access]
+      parameters:
+        - name: houseId
+          in: path
+          description: Homely house ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content: {}
+    put:
+      tags:
+        - tariff
+      summary: Set priority energy tariff
+      description: Set an energy tariff to take priority over house's user-declared energy tariff
+      operationId: setPriorityTariff
+      security:
+        - OAuth2: [tariff-priority-full-access]
+      parameters:
+        - name: houseId
+          in: path
+          description: Homely house ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tariff:
+                  $ref: "#/components/schemas/AbsoluteTariff"
+        required: true
+      responses:
+        "202":
+          description: Success
+          content: {}
+        "400":
+          description: Bad request
+          content: {}
+        "404":
+          description: House not found
+          content: {}
+      x-codegen-request-body-name: tariffRequest
+      x-rate-limit:
+        interval: 1 hour
+        limit: 6
+    get:
+      tags:
+        - tariff
+      summary: Get priority energy tariff
+      description: Get priority energy tariff
+      operationId: getPriorityTariff
+      security:
+        - OAuth2: [tariff-priority-full-access]
+      parameters:
+        - name: houseId
+          in: path
+          description: Homely house ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  houseId:
+                    type: string
+                  tariff:
+                    $ref: "#/components/schemas/AbsoluteTariff"
+        "404":
+          description: House or priority tariff not found
+          content: {}
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth 2 Authorization Code flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://oauth.homelyenergy.com/auth
+          tokenUrl: https://oauth.homelyenergy.com/token
+          refreshUrl: https://oauth.homelyenergy.com/refresh
+          scopes:
+            list-houses: List user's houses
+            basic-status: Read basic status
+            advanced-status: Read advanced status
+            energy-consumption-hh: Read energy consumption data
+            tariff-priority-full-access: Read/Write/Clear the priority tariff
+  schemas:
+    AbsoluteTariff:
+      example:
+        type: "absolute-periods"
+        unit: "gbp"
+        startTime: "2023-06-01T05:30Z"
+        periods:
+          - rate: 1.1
+          - rate: 1.2
+          - rate: null
+          - rate: 1.5
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["absolute-periods"]
+        unit:
+          type: string
+          enum: ["gbp"]
+        startTime:
+          type: string
+          description: Start date-time of the tariff in ISO8601 format. Must be aligned to a settlement period start time, ie on the hour or half-past the hour. Must be in UTC (aka Zulu) timezone
+          format: date-time
+          pattern: '\d{4}-(0\d|1[0-2])-([0-2]\d|3[0-1])T(((0|1)\d)|20|21|22|23):(00|30)(:00(\.0{1,3})?)?Z'
+        periods:
+          type: array
+          description: Array of half-hourly rates effective from the start time onwards
+          items:
+            type: object
+            properties:
+              rate:
+                description: Rate of tariff for this half-hour period
+                nullable: true
+                type: number

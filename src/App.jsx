@@ -1,87 +1,33 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
 import './App.css'
-import { Home } from './Home'
-import { Boost } from './Boost'
-import { Overlay } from './Overlay'
-import { SimulationMonitor } from './SimulationMonitor'
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import worker from './workers/simulation.js';
-import WebWorker from './WebWorker';
-import { SimulationContext } from './SimulationContext.js';
-/*
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/boost",
-    element: <Boost />,
-  },
-]); */
-
-
-const router = createBrowserRouter([
-  {
-    path: "/hmly/",
-    element: <Home />,
-  },
-  {
-    path: "/hmly/boost",
-    element: <Boost />,
-  },
-]);
 
 function App() {
-  const webWorker = new WebWorker(worker);
-  const [simulationState, setSimulationState] = useState({
-    heatingOn: false,
-    temperature:0
-  }
-  )
-
-  useEffect(() => {
-    webWorker.postMessage({eventType:"init"});
-  }, []);
-
-  const turnOn = () => {
-    webWorker.postMessage({eventType:"on"});
-  }
-
-  const turnOff = () => {
-    webWorker.postMessage({eventType:"off"});
-  }
-
-  webWorker.addEventListener('message', (e) => {
-    setSimulationState(e.data)
-});
+  const [count, setCount] = useState(0)
 
   return (
     <>
-    <SimulationMonitor data={simulationState}/>
-
-        <SimulationContext.Provider value={{
-temperature: simulationState.temperature,
-isOn:simulationState.heatingOn,
-turnOn: turnOn,
-turnOff: turnOff
-
-
-        }}>
-    <div className="box">
-      
-    <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-        <Overlay />
-        
-    </div>
-    </SimulationContext.Provider>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.jsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
     </>
   )
 }
